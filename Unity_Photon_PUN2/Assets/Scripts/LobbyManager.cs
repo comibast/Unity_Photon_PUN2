@@ -11,7 +11,7 @@ namespace Comibast
     /// </summary>
     public class LobbyManager : MonoBehaviourPunCallbacks
     {
-        #region 資料
+        #region 資料大廳
         private TMP_InputField inputFieldPlayerName;
         private TMP_InputField inputFieldCreateRoomName;
         private TMP_InputField inputFieldJoinRoomName;
@@ -30,7 +30,29 @@ namespace Comibast
         private CanvasGroup groupMain;
         #endregion
 
+        #region 資料房間
+        private TextMeshProUGUI textRoomName;
+        private TextMeshProUGUI textRoomPlayer;
+        private CanvasGroup groupRoom;
+        private Button btnStartGame;
+        private Button btnLeaveRoom;
+        #endregion
+
         private void Awake()
+        {
+            GetLobbyObjectAndEvent();
+            textRoomName = GameObject.Find("文字房間名稱").GetComponent<TextMeshProUGUI>();
+            textRoomPlayer = GameObject.Find("文字房間人數").GetComponent<TextMeshProUGUI>();
+            groupRoom = GameObject.Find("畫布房間").GetComponent<CanvasGroup>();
+            btnStartGame = GameObject.Find("按鈕開始遊戲").GetComponent<Button>();
+            btnLeaveRoom = GameObject.Find("按鈕離開房間").GetComponent<Button>();
+
+            btnLeaveRoom.onClick.AddListener(LeaveRoom);
+
+            PhotonNetwork.ConnectUsingSettings();
+        }
+
+        private void GetLobbyObjectAndEvent()
         {
             inputFieldPlayerName = GameObject.Find("輸入欄位玩家名稱").GetComponent<TMP_InputField>();
             inputFieldCreateRoomName = GameObject.Find("輸入欄位房間名稱").GetComponent<TMP_InputField>();
@@ -50,12 +72,10 @@ namespace Comibast
             btnCreateRoom.onClick.AddListener(CreateRoom);
             btnJoinRoom.onClick.AddListener(JoinRoom);
             btnJoinRandomRoom.onClick.AddListener(JoinRandomRoom);
-
-            PhotonNetwork.ConnectUsingSettings();
         }
 
         /// <summary>
-        /// 連線至主機方法
+        /// 連線至主機
         /// </summary>
         public override void OnConnectedToMaster()
         {
@@ -79,14 +99,31 @@ namespace Comibast
             PhotonNetwork.CreateRoom(nameCreateRoom, ro);
         }
 
+        /// <summary>
+        /// 加入房間
+        /// </summary>
         private void JoinRoom()
         {
             PhotonNetwork.JoinRoom(nameJoinRoom);
         }
 
+        /// <summary>
+        /// 加入隨機房間
+        /// </summary>
         private void JoinRandomRoom()
         {
             PhotonNetwork.JoinRandomRoom();
+        }
+
+        /// <summary>
+        /// 離開房間
+        /// </summary>
+        private void LeaveRoom()
+        {
+            PhotonNetwork.LeaveRoom();
+            groupRoom.alpha = 0;
+            groupRoom.interactable = false;
+            groupRoom.blocksRaycasts = false;
         }
 
         public override void OnCreatedRoom()
@@ -99,9 +136,27 @@ namespace Comibast
         {
             base.OnJoinedRoom();
             print("<color=green>加入房間成功</color>");
+
+            groupRoom.alpha = 1;
+            groupRoom.interactable = true;
+            groupRoom.blocksRaycasts = true;
+
+            textRoomName.text = "房間名稱：" + PhotonNetwork.CurrentRoom.Name;
+            textRoomPlayer.text = $"房間人數 { PhotonNetwork.CurrentRoom.PlayerCount } / { PhotonNetwork.CurrentRoom.MaxPlayers }";
+
         }
 
+        public override void OnPlayerEnteredRoom(Player newPlayer)
+        {
+            base.OnPlayerEnteredRoom(newPlayer);
+            textRoomPlayer.text = $"房間人數 { PhotonNetwork.CurrentRoom.PlayerCount } / { PhotonNetwork.CurrentRoom.MaxPlayers }";
+        }
 
+        public override void OnPlayerLeftRoom(Player otherPlayer)
+        {
+            base.OnPlayerLeftRoom(otherPlayer);
+            textRoomPlayer.text = $"房間人數 { PhotonNetwork.CurrentRoom.PlayerCount } / { PhotonNetwork.CurrentRoom.MaxPlayers }";
+        }
     }
 
 }
