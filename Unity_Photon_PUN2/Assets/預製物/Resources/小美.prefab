@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 7575867279971076387}
   - component: {fileID: 7575867279971076388}
   - component: {fileID: 586061939}
+  - component: {fileID: 8463021727992456868}
   m_Layer: 0
   m_Name: "\u5C0F\u7F8E"
   m_TagString: Untagged
@@ -127,12 +128,12 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 1.8
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!70 &7575867279971076390
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -170,6 +171,8 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 7575867279971076387}
   - {fileID: 7575867279971076388}
+  - {fileID: 8463021727992456868}
+  - {fileID: 2031990897}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -223,6 +226,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 10
+  groundOffset: {x: 0, y: -0.55, z: 0}
+  groundSize: {x: 0.8, y: 0.1, z: 0}
+  jump: 600
+--- !u!114 &8463021727992456868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7575867279971076410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
 --- !u!1 &7575867280686550676
 GameObject:
   m_ObjectHideFlags: 0
@@ -235,7 +257,7 @@ GameObject:
   - component: {fileID: 7575867280686550673}
   - component: {fileID: 7575867280686550674}
   m_Layer: 0
-  m_Name: Text (TMP)
+  m_Name: "\u540D\u7A31\u4ECB\u9762"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -370,6 +392,7 @@ GameObject:
   - component: {fileID: 7575867280887474297}
   - component: {fileID: 7575867280887474298}
   - component: {fileID: 7575867280887474299}
+  - component: {fileID: 2031990897}
   m_Layer: 0
   m_Name: "\u756B\u5E03\u73A9\u5BB6\u540D\u7A31"
   m_TagString: Untagged
@@ -459,3 +482,19 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &2031990897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7575867280887474301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 0
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1

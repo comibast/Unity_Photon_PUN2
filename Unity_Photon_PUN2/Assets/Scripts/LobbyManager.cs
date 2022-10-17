@@ -78,7 +78,12 @@ namespace Comibast
             groupMain = GameObject.Find("畫布主要").GetComponent<CanvasGroup>();
             //結束編輯：按下 Enter 或者在其他地方點左鍵
             //輸入欄位.結束編輯.添加監聽((輸入欄位的輸入字串) => 儲存)
-            inputFieldPlayerName.onEndEdit.AddListener((input) => namePlayer = input);
+            inputFieldPlayerName.onEndEdit.AddListener((input) =>
+            {
+                namePlayer = input;
+                PhotonNetwork.NickName = namePlayer;
+            });
+
             inputFieldCreateRoomName.onEndEdit.AddListener((input) => nameCreateRoom = input);
             inputFieldJoinRoomName.onEndEdit.AddListener((input) => nameJoinRoom = input);
 
