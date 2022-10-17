@@ -49,9 +49,22 @@ namespace Comibast
 
             btnLeaveRoom.onClick.AddListener(LeaveRoom);
 
+            //PhotonView 遠端同步客戶("RPC 方法", 針對那些玩家)
+            btnStartGame.onClick.AddListener(() => photonView.RPC("RPCStartGame", RpcTarget.All));
+
             PhotonNetwork.ConnectUsingSettings();
         }
 
+        //遠端同步客戶端方法
+        [PunRPC]
+        private void RPCStartGame()
+        {
+            PhotonNetwork.LoadLevel("遊戲場景");
+        }
+
+        /// <summary>
+        /// 取得大廳物件與事件
+        /// </summary>
         private void GetLobbyObjectAndEvent()
         {
             inputFieldPlayerName = GameObject.Find("輸入欄位玩家名稱").GetComponent<TMP_InputField>();
