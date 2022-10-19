@@ -17,7 +17,11 @@ namespace Comibast
 
         private void Awake()
         {
-            InvokeRepeating("Spawn", 0, intervalSpawn);
+            //如果 是 作為主機的客戶 才執行生成
+            if (PhotonNetwork.IsMasterClient)
+            {
+                InvokeRepeating("Spawn", 0, intervalSpawn);
+            }
         }
 
         private void Spawn()

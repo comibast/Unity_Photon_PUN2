@@ -59,6 +59,7 @@ namespace Comibast
         [PunRPC]
         private void RPCStartGame()
         {
+            PhotonNetwork.CurrentRoom.IsOpen = false;
             PhotonNetwork.LoadLevel("¹CÀ¸³õ´º");
         }
 

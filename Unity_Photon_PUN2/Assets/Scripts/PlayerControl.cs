@@ -2,6 +2,7 @@ using Photon.Pun;
 using TMPro;
 using UnityEngine;
 using Cinemachine;
+using UnityEngine.UI;
 
 namespace Comibast
 {
@@ -23,6 +24,12 @@ namespace Comibast
         private string parWalk = "開關走路";
         private bool isGround;
         private Transform childCanvas;
+        private TextMeshProUGUI textFruit;
+        private int countFruit;
+        private int countFruitMax = 3;            //最多吃到三個就過關
+        private CanvasGroup groupGame;
+        private TextMeshProUGUI textWinner;
+        private Button btnBackToLobby;
 
         private void OnDrawGizmos()
         {
@@ -41,6 +48,20 @@ namespace Comibast
             if (!photonView.IsMine) enabled = false;
 
             photonView.RPC("RPCUpdateName", RpcTarget.All);
+
+            textFruit = transform.Find("畫布玩家名稱/水果數量").GetComponent<TextMeshProUGUI>();
+            groupGame = GameObject.Find("畫布遊戲介面").GetComponent<CanvasGroup>();
+            textWinner = GameObject.Find("勝利者").GetComponent<TextMeshProUGUI>();
+
+            btnBackToLobby = GameObject.Find("返回遊戲大廳").GetComponent<Button>();
+            btnBackToLobby.onClick.AddListener(() =>
+            {
+                if (photonView.IsMine)
+                {
+                    PhotonNetwork.LeaveRoom();
+                    PhotonNetwork.LoadLevel("遊戲大廳");
+                }
+            });
         }
 
         private void Start()
@@ -53,17 +74,56 @@ namespace Comibast
             Move();
             CheckGround();
             Jump();
+            BackToTop();
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
             if (collision.name.Contains("草莓"))
             {
-                // 連線伺服器.刪除(碰到的物件)
-                PhotonNetwork.Destroy(collision.gameObject);
+                Destroy(collision.gameObject);
+
+                textFruit.text = (++countFruit).ToString();
+
+                if (countFruit >= countFruitMax) Win();
             }
         }
 
+        /// <summary>
+        /// 玩家掉落後回到場景上方
+        /// </summary>
+        private void BackToTop()
+        {
+            if (transform.position.y < -20)
+            {
+                rig.velocity = Vector3.zero;                    //掉落速度
+                transform.position = new Vector3(0, 15, 0);     //掉落後重生座標
+            }
+        }
+
+        /// <summary>
+        /// 獲勝
+        /// </summary>
+        private void Win()
+        {
+            groupGame.alpha = 1;
+            groupGame.interactable = true;
+            groupGame.blocksRaycasts = true;
+
+            textWinner.text = "獲勝玩家：" + photonView.Owner.NickName;
+
+            DestroyObject();
+        }
+
+        /// <summary>
+        /// 獲勝後刪除物件
+        /// </summary>
+        private void DestroyObject()
+        {
+            GameObject[] fruits = GameObject.FindGameObjectsWithTag("水果");
+            for (int i = 0; i < fruits.Length; i++) Destroy(fruits[i]);
+            Destroy(FindObjectOfType<SpawnFruit>().gameObject);
+        }
 
         [PunRPC]
         private void RPCUpdateName()
